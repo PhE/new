@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
+import os
 import piggyphoto
 import pygame
 import pygame.locals
 import redis
+import shutil
 import time
 
 
@@ -39,7 +41,8 @@ def main():
                     pass
                 elif evt.key == 99: # C
                     print 'capture image ...'
-                    camera.capture_image('data/capture.jpeg')
+                    source_capture = 'data/capture.jpeg'
+                    camera.capture_image(source_capture)
                     
                     # obtenir les infos saisis
                     auteur = cx.get('auteur')
@@ -50,6 +53,16 @@ def main():
                     print "info:", auteur, desc
                     
                     # Déplacer la photo 
+                    time_stamp = time.strftime('%Y%m%d%H%M%S', time.localtime())
+                    dest_capture = os.path.join('data/images', 'capt%s.jpeg' % time_stamp)
+                    shutil.move(source_capture, dest_capture)
+                    
+                    # On ajoute à la liste des photos prises
+                    cx.rpush('captures', dest_capture)
+                    # trim de la liste ???
+                    
+                    # on informe qu'une capture vient d'être faite
+                    cx.publish('capture', dest_capture)
 
                 elif evt.key == 115: # S
                     print 'demande de stacking rapide ...'

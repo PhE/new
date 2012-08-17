@@ -14,7 +14,9 @@ def main(lent):
     ps = cx.pubsub()
     ps.subscribe([canal])
     for m in ps.listen():
-        print m   
+        # On récupère les x dernières photos
+        print cx.lrange('captures', -5, -1)
+        
         # execution de stack
         time.sleep(5)
         

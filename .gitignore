@@ -10,7 +10,7 @@ dist
 build
 eggs
 parts
-bin
+/bin
 var
 sdist
 develop-eggs
@@ -28,3 +28,6 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+data/images/*.jpeg
+data/*.jpeg
