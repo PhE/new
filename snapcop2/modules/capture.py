@@ -8,13 +8,17 @@ import pygame.locals
 import redis
 import shutil
 import time
+from wand.image import Image
+from wand.display import display
 
 
 #pygame.font.init()
 pygame.joystick.init()
 pygame.display.init()
-window = pygame.display.set_mode((800, 800)) 
-#pygame.display.set_caption('Visu photo stacker %s' % day)
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+window = pygame.display.set_mode((800, 600)) 
+pygame.display.set_caption('Display Preview')
+screen = pygame.display.get_surface()
 
 def main():
     print 'capture ...'
@@ -26,10 +30,19 @@ def main():
     
     stop = False
     while not stop:    
-        time.sleep(0.3)
+        time.sleep(0.)
         print time.time(), 'capture preview ...'
-        camera.capture_preview('data/preview.jpeg')
+        camera.capture_preview('data/preview.jpg')
+        with Image(filename='data/preview.jpg') as img:
+            with img.clone() as i:
+                i.resize((800), (600))
+                i.save(filename='data/preview.jpg')      
+        preview = pygame.image.load('data/preview.jpg')
+        screen.blit(preview, (0, 0))
+        pygame.display.update()
+        
         cx.publish('preview', '')
+        
         
         evts = pygame.event.get()
         for evt in evts:
@@ -41,7 +54,7 @@ def main():
                     pass
                 elif evt.key == 99: # C
                     print 'capture image ...'
-                    source_capture = 'data/capture.jpeg'
+                    source_capture = 'data/capture.jpg'
                     camera.capture_image(source_capture)
                     
                     # obtenir les infos saisis
@@ -54,7 +67,7 @@ def main():
                     
                     # Déplacer la photo 
                     time_stamp = time.strftime('%Y%m%d%H%M%S', time.localtime())
-                    dest_capture = os.path.join('data/images', 'capt%s.jpeg' % time_stamp)
+                    dest_capture = os.path.join('data/images', 'capt%s.jpg' % time_stamp)
                     shutil.move(source_capture, dest_capture)
                     
                     # On ajoute à la liste des photos prises
