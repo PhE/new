@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import subprocess
+
+cmd = './stack_lent & ./capture'
+subprocess.check_output(cmd, shell=True)

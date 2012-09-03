@@ -9,10 +9,9 @@
 dist
 build
 eggs
-errors
-sessions
+*_web2py\errors
+*_web2py\sessions
 parts
-/bin
 var
 sdist
 develop-eggs

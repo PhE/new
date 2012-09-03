@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+
+APP_FOLDER=os.path.realpath(os.path.join(__file__, '..', '..'))
+os.environ['APP_FOLDER'] = APP_FOLDER
+sys.path.append(APP_FOLDER)
+os.chdir(APP_FOLDER)
+
+import modules.capture
+modules.capture.main()
